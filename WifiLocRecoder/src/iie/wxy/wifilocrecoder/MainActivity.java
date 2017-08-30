@@ -8,9 +8,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import iie.wxy.AccessPoint;
 import iie.wxy.SystemUtils;
 
 import android.support.v7.app.ActionBarActivity;
+import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;

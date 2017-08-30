@@ -1,42 +1,30 @@
 package iie.wxy;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.Queue;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import android.R.string;
 
 public class AccessPoint {
 
 	private String BSSID;
 	private double avgSignalStrength;
 	private double stdSignalStrength;
-	private ArrayList<Integer> signaList;
 	private double FPR;
 	public  int		pheromone;
 	private  int	RSSRange;
 	private int maxSignal;
 	private int minSignal;
+	private static final Integer QUEUEMAX = 20;
+	public Queue<Integer> queue = new LinkedList<Integer>();
 	
 	public AccessPoint(String bssid) {
 		BSSID = bssid;
-		signaList = new ArrayList<>();
 		pheromone = 10;
 		RSSRange = 0;
 	}
 	
 	public AccessPoint(String bssid, int level) {
 		BSSID = bssid;
-		signaList = new ArrayList<>();
 		addSamplingSignalStrength(level);
 		pheromone = 10;
 		RSSRange = 0;
@@ -72,7 +60,7 @@ public class AccessPoint {
 	
 	public String toString(){
 		computeStatistical();
-		return BSSID+":times="+signaList.size()+",avg="+
+		return BSSID+":times="+queue.size()+",avg="+
 				avgSignalStrength+",std="+stdSignalStrength+",FPR="+FPR;
 	}
 	
@@ -82,7 +70,7 @@ public class AccessPoint {
 		}
 		int max=Integer.MIN_VALUE, min= 0;
 		avgSignalStrength = 0;
-		for (Integer signal : signaList) {
+		for(Integer signal : queue){
 			avgSignalStrength+=signal;
 			if (signal > max) {
 				max = signal;
@@ -94,17 +82,20 @@ public class AccessPoint {
 		maxSignal = max;
 		minSignal = min;
 		RSSRange = Math.abs(max - min);
-		avgSignalStrength = avgSignalStrength/signaList.size();
+		avgSignalStrength = avgSignalStrength/queue.size();
 		stdSignalStrength = 0;
-		for(Integer value:signaList){
+		for(Integer value:queue){
 			stdSignalStrength+=(value-avgSignalStrength)*(value-avgSignalStrength); 
 		}
-		stdSignalStrength = (stdSignalStrength/(signaList.size()));//Math.sqrt		
-		FPR = signaList.size()*(100+avgSignalStrength)/(stdSignalStrength+1);//+1
+		stdSignalStrength = (stdSignalStrength/(queue.size()));//Math.sqrt		
+		FPR = queue.size()*(100+avgSignalStrength)/(stdSignalStrength+1);//+1
 	}
 	
 	public void addSamplingSignalStrength(int ss){
-		signaList.add(ss);
+		queue.add(ss);
+		while (queue.size() > QUEUEMAX) {
+			queue.poll();
+		}
 		stdSignalStrength	= -1;
 		avgSignalStrength	= -1;
 		RSSRange			= -1;
