@@ -7,10 +7,40 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="iie.wxy.wifilocrecoder.MainActivity" >
+    
     <LinearLayout     
         android:orientation="vertical"
         android:layout_width="match_parent"
-    	android:layout_height="match_parent">
+    	android:layout_height="wrap_content">
+    	<TextView  
+                android:id="@+id/txt_warning"  
+                android:layout_width="wrap_content"  
+                android:layout_height="match_parent"  
+                android:padding="10dp"  
+                android:text="@string/Warning_OnlyLetters"  
+                android:textColor="#FF0000"  
+                />
+    	<LinearLayout  
+    	    android:orientation="horizontal"
+	        android:layout_width="match_parent"
+	    	android:layout_height="wrap_content">
+	    	<TextView  
+                android:id="@+id/txt_name"  
+                android:layout_width="wrap_content"  
+                android:layout_height="match_parent"  
+                android:padding="10dp"  
+                android:text="@string/UI_TextView_Name"  
+                android:textColor="#000"  
+                />
+	    	<EditText  
+                android:id="@+id/txt_Edittext"  
+                android:layout_width="match_parent"  
+                android:layout_height="match_parent"  
+                android:layout_centerVertical="true"  
+                android:layout_toRightOf="@id/txt_name"
+                android:hint="@string/UI_EditorView_Hint"  
+                />
+	    </LinearLayout>
 	    <Button  
 	        android:id="@+id/start_service"  
 	        android:layout_width="match_parent"  

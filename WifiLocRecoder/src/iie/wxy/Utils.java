@@ -3,6 +3,7 @@ package iie.wxy;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -40,6 +41,9 @@ public class Utils {
 	static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd,HH:mm:ss");
 	public static long getTimestamp(String date, String time){
 		return getTimestamp(date+","+time);
+	}
+	public static long getTimeStamp(){
+		return System.currentTimeMillis();
 	}
 	public static long getTimestamp(String	str){
 		long ret = 0;

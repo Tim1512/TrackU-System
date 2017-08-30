@@ -4,5 +4,19 @@
     <string name="app_name">WifiLocRecoder</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+    <string name="PackageName">iie.wxy.wifilocrecoder.WifiRecoder</string>
+    <string name="NOTIFICATION_Ticker">TrackU in service...</string>
+    <string name="NOTIFICATION_ContentTitle">TrackU in service...</string>
+	<string name="NOTIFICATION_ContentText">Thanks for your participation!</string>
+	<string name="CONFIG_FileName">config</string>
+	<string name="CONFIG_IsRunning">isRunning</string>
+	<string name="CONFIG_UserName">user</string>
+	<string name="DEFAULT_DogName">default</string>
+	<string name="INTENT_Key_Name">name</string>
+	<string name="UI_TextView_Name">User Name:</string>
+	<string name="UI_EditorView_Hint">What\'s your name?</string>
+	<string name="Network_BASEURL">http://204.44.91.62:8080/TrackuCollector/collector</string>
+	<string name="Network_MsgKey">msg</string>
+	<string name="Warning_Empty">Please input user name!</string>
+	<string name="Warning_OnlyLetters">Please input letters or numbers!</string>
 </resources>

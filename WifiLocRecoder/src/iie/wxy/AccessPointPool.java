@@ -1,5 +1,7 @@
 package iie.wxy;
 
+import iie.wxy.wifilocrecoder.Save;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,6 +13,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.R.integer;
+import android.util.Log;
+
 public class AccessPointPool {
 
 	Map<String, AccessPoint> APList;
@@ -18,6 +23,11 @@ public class AccessPointPool {
 	public double[] center;
 	
 	public double[] tempRealPostion = new double[2];
+	
+	public double gFator = 0.0;//factor
+	public double gGamma = 0.0;//gamal
+	public int gAPCounts = 0;
+	public Double gWeight = 0.0;
 	
 	Queue<Location> locationQ = new LinkedList<Location>();
 	public AccessPointPool(){
@@ -58,9 +68,8 @@ public class AccessPointPool {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-
 	}
+	
 	/**
 	 * 
 	* @title: eliminateAccessPoint 
@@ -123,6 +132,15 @@ public class AccessPointPool {
 	
 	public double getFadingFactor(Location loc) {
 		if (lastLocation == null || loc.apArray.length() == 0) {
+			if (lastLocation == null) {
+				Save.getInstace().writeFile(
+						new String("warring in getFadingFactor: lastLocation == null" + "\n").getBytes());
+			}
+			if (loc.apArray.length() == 0) {
+				Save.getInstace().writeFile(
+						new String("warring in getFadingFactor: loc.apArray.length() == 0" + "\n").getBytes());
+			}
+			
 			return 1;
 		}
 		int apCount = 0;
@@ -153,17 +171,29 @@ public class AccessPointPool {
 					}
 					drift += ((Math.abs(fluctuation)/(1+rssRange))*ap.getFDR());
 				}
-				
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if (countWieight == 0) {
-			return 0;
+//			到此处表明一个极端情况，本次扫描到的ap一个都没有遇见过
+//			此时对不调整位置，apFactor=0，drift = 1，gAPCounts=实际数目。
+//			String ss = "warring in getFadingFactor: countWieight == 0";
+//			Save.getInstace().writeFile(
+//					new String(ss.toString() + "\n").getBytes());
+			gFator = 0;
+			gGamma = 1;
+			gAPCounts = loc.apArray.length();
+			gWeight = countWieight;
+			return 1;
 		}else {
 			double apFactor = (double)apCount/loc.apArray.length();//countAPFactor+=apFactor;
 			drift = apFactor*(drift/countWieight);
+			gFator = apFactor;
+			gGamma = drift;
+			gAPCounts = loc.apArray.length();
+			gWeight = countWieight;
 			return drift;
 		}
 	}
@@ -177,15 +207,20 @@ public class AccessPointPool {
 	 */
 	public Location reduceDrift(Location loc) {
 		update(loc);
-		
 		if (lastLocation != null) {
 			double parameterP = 1-getFadingFactor(loc);//countDrift+=parameterP;countc++;
 			double lat = 0,lng = 0;
 			double[] tempCenter = getQueueCentre();
-			lat= loc.latitude - parameterP*(loc.latitude - tempCenter[0]);
-			lng = loc.longitude - parameterP*(loc.longitude - tempCenter[1]);
+//			lat= loc.latitude - parameterP*(loc.latitude - tempCenter[0]);
+//			lng = loc.longitude - parameterP*(loc.longitude - tempCenter[1]);
+			lat= tempCenter[0] + parameterP*(loc.latitude - tempCenter[0]);
+			lng = tempCenter[1] + parameterP*(loc.longitude - tempCenter[1]);
 			double tempD = Utils.Distance(lat, lng, tempCenter[0], tempCenter[1]);
 			loc.updateLatlng(lat, lng);				
+		}else{
+			Save.getInstace().writeFile(
+					new String("warring in reduceDrift: lastLocation == null" + "\n").getBytes());
+			Log.d("wxy", "lastLocation == null");
 		}
 		eliminateAccessPoint(loc);
 		appendLocationQ(loc);

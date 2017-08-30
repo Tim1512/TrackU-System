@@ -27,17 +27,14 @@ public class FileUtils {
 	}
 	
 	static public byte[] readFile(File file){
-		FileInputStream fis;
 		byte[] b;
-		try {
-			fis = new FileInputStream(file);
+		try(FileInputStream fis  = new FileInputStream(file);){
 			int len = fis.available();
 			if(len <= 0) 
 				return null;
 			b = new byte[len];
 			fis.read(b);
-			fis.close();
-		} catch (IOException e) {
+		}catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
@@ -89,13 +86,11 @@ public class FileUtils {
 	
 	static public boolean writeFile(File file, byte[] bytes){
 		if(file.exists()){
-			try {
-				FileOutputStream fos = new FileOutputStream(file);
+			try(FileOutputStream fos = new FileOutputStream(file);){
 				fos.write(bytes);
 				fos.close();
 				return true;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			}catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -112,10 +107,8 @@ public class FileUtils {
 		try {
 			if(!file.createNewFile()){
 			}
-				
 			return file;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -148,20 +141,17 @@ public class FileUtils {
 	 */
 	public static void readEachLine(String name, ReadLineCB readCB){
 		String line;
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(new File(name));
+//		FileInputStream fis = null;
+		try(FileInputStream fis = new FileInputStream(new File(name));){
 			BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
 			while((line=reader.readLine()) != null){
 				if (line.length() > 0) {
 					readCB.readLineCallBack(line);
 				}
 			}
-			fis.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		}catch (IOException e) {
 			e.printStackTrace();
-		}
+ 		}
 	}
 	
 	/**
@@ -180,7 +170,6 @@ public class FileUtils {
 		try {
 			fos = new FileOutputStream(new File(name),isAppend);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}

@@ -13,6 +13,8 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.R.string;
+
 public class AccessPoint {
 
 	private String BSSID;

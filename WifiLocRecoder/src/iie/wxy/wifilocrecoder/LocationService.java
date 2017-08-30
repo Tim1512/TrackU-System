@@ -71,6 +71,7 @@ public class LocationService {
 	public LocationClientOption getOption(){
 		return DIYoption;
 	}
+	
 	/***
 	 * 
 	 * @return DefaultLocationClientOption
@@ -81,9 +82,9 @@ public class LocationService {
 			mOption.setLocationMode(LocationMode.Hight_Accuracy);
 			mOption.setCoorType("wgs84");
 			mOption.setOpenGps(false);
-			mOption.setPriority(LocationClientOption.NetWorkFirst);//GPS优先
+			mOption.setPriority(LocationClientOption.NetWorkFirst);
 			mOption.disableCache(true);
-			mOption.setScanSpan(0);
+			mOption.setScanSpan(0);///设置时间间隔 ///
 		    mOption.setLocationNotify(false);
 		    mOption.setIgnoreKillProcess(true);
 		    mOption.SetIgnoreCacheException(true);
